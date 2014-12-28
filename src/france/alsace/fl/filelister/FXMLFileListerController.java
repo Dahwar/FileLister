@@ -5,6 +5,7 @@
  */
 package france.alsace.fl.filelister;
 
+import java.awt.Desktop;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -61,6 +62,10 @@ public class FXMLFileListerController implements Initializable {
     private Label labelError;
     @FXML
     private ComboBox<String> comboBoxType;
+    @FXML
+    private CheckBox checkBoxSeparator;
+    @FXML
+    private Button openButton;
     
     DirectoryChooser directoryChooser = new DirectoryChooser();
     ObservableList<String> options = 
@@ -68,12 +73,14 @@ public class FXMLFileListerController implements Initializable {
         ".txt",
         ".html"
     );
-    @FXML
-    private CheckBox checkBoxSeparator;
+    
+    private final String FINAL_FOLDER_NAME = "FileListerFX";
+    private String lastResultFolder = "";
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         progress.setVisible(false);
+        openButton.setDisable(true);
         this.directoryChooser.setInitialDirectory(new File(System.getProperty("user.home")));
         comboBoxType.setItems(options);
         comboBoxType.setValue(".txt");
@@ -125,8 +132,9 @@ public class FXMLFileListerController implements Initializable {
             if(folder.exists() && resultFolder.exists()) {
                 this.progress.setVisible(true);
                 this.runButton.setDisable(true);
+                this.openButton.setDisable(true);
                 
-                File outputDir = new File (textFieldResultFolder.getText() + "\\FileListerFX");
+                File outputDir = new File (textFieldResultFolder.getText() + "\\" + FINAL_FOLDER_NAME);
                 
                 if(!outputDir.exists()) {
                     outputDir.mkdirs();
@@ -146,6 +154,9 @@ public class FXMLFileListerController implements Initializable {
                         }
                         
                         long b = System.currentTimeMillis();
+                        
+                        lastResultFolder = outputDir.getAbsolutePath();
+                        
                         Platform.runLater(new Runnable() {
                             public void run() {
                                 progress.setVisible(false);
@@ -153,6 +164,7 @@ public class FXMLFileListerController implements Initializable {
                                 labelFiles.setText(Integer.toString(lister.getNumberOfFile()));
                                 labelFolders.setText(Integer.toString(lister.getNumberOfFolder()));
                                 runButton.setDisable(false);
+                                openButton.setDisable(false);
                             }
                         });
                     }
@@ -291,6 +303,20 @@ public class FXMLFileListerController implements Initializable {
             }
         } else {
             this.labelError.setText("Veuillez remplir les trois champs !");
+        }
+    }
+
+    @FXML
+    private void openFolder(ActionEvent event) {
+        if(lastResultFolder != "") {
+            labelError.setText("");
+            try {
+                Desktop.getDesktop().open(new File(lastResultFolder));
+            } catch (IOException ex) {
+                Logger.getLogger(FXMLFileListerController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } else {
+            labelError.setText("Veuillez lister les fichiers avant d'afficher le résultat !");
         }
     }
 }

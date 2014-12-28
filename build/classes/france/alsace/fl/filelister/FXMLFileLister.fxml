@@ -60,26 +60,19 @@
             </HBox>
             <BorderPane prefHeight="33.0" prefWidth="200.0">
                <center>
-                  <CheckBox fx:id="checkBoxSeparator" mnemonicParsing="false" text="Afficher séparateurs" BorderPane.alignment="CENTER" />
+                  <CheckBox fx:id="checkBoxSeparator" mnemonicParsing="false" text="Afficher colonnes" BorderPane.alignment="CENTER" />
                </center>
             </BorderPane>
-            <BorderPane prefHeight="33.0" prefWidth="200.0">
-               <center>
-                  <Button fx:id="runButton" mnemonicParsing="false" onAction="#listFolder" text="Let's go !" BorderPane.alignment="CENTER">
-                     <BorderPane.margin>
-                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                     </BorderPane.margin>
-                  </Button>
-               </center>
+            <BorderPane prefHeight="66.0" prefWidth="400.0">
                <left>
-                  <Pane prefHeight="25.0" prefWidth="70.0" BorderPane.alignment="CENTER">
+                  <Pane prefHeight="15.0" prefWidth="56.0" BorderPane.alignment="CENTER">
                      <BorderPane.margin>
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                      </BorderPane.margin>
                   </Pane>
                </left>
                <right>
-                  <ProgressIndicator fx:id="progress" prefHeight="25.0" prefWidth="70.0" BorderPane.alignment="CENTER">
+                  <ProgressIndicator fx:id="progress" prefHeight="15.0" prefWidth="56.0" BorderPane.alignment="CENTER">
                      <BorderPane.margin>
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                      </BorderPane.margin>
@@ -100,6 +93,18 @@
                      </children>
                   </HBox>
                </top>
+               <center>
+                  <HBox alignment="CENTER" prefHeight="59.0" prefWidth="268.0" BorderPane.alignment="CENTER">
+                     <children>
+                        <Button fx:id="runButton" mnemonicParsing="false" onAction="#listFolder" text="Let's go !" />
+                        <Button fx:id="openButton" mnemonicParsing="false" onAction="#openFolder" text="Ouvrir">
+                           <HBox.margin>
+                              <Insets left="10.0" />
+                           </HBox.margin>
+                        </Button>
+                     </children>
+                  </HBox>
+               </center>
             </BorderPane>
             <HBox prefHeight="33.0" prefWidth="200.0">
                <children>
@@ -143,7 +148,7 @@
                   </Label>
                </children>
             </HBox>
-            <BorderPane prefHeight="28.0" prefWidth="400.0">
+            <BorderPane prefHeight="30.0" prefWidth="400.0">
                <center>
                   <Label fx:id="labelError" textFill="RED" BorderPane.alignment="CENTER" />
                </center>
