@@ -60,7 +60,16 @@
             </HBox>
             <BorderPane prefHeight="33.0" prefWidth="200.0">
                <center>
-                  <CheckBox fx:id="checkBoxSeparator" mnemonicParsing="false" text="Afficher colonnes" BorderPane.alignment="CENTER" />
+                  <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                     <children>
+                        <CheckBox fx:id="checkBoxSeparator" mnemonicParsing="false" text="Afficher colonnes">
+                           <HBox.margin>
+                              <Insets right="10.0" />
+                           </HBox.margin>
+                        </CheckBox>
+                        <CheckBox fx:id="checkboxSize" mnemonicParsing="false" text="Afficher poids" />
+                     </children>
+                  </HBox>
                </center>
             </BorderPane>
             <BorderPane prefHeight="66.0" prefWidth="400.0">

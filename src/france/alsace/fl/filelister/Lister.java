@@ -11,6 +11,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -67,8 +69,9 @@ public class Lister {
      * @param doErase   erase the output file if exist or continue to fill in the same file 
      * @param type      type of output file
      * @param separator indicate if the separator beetween column appear
+     * @param displaySize indicate if the size of file and folder appear
      */
-    public void execute(File folder, File output, boolean doErase, int type, boolean separator) {
+    public void execute(File folder, File output, boolean doErase, int type, boolean separator, boolean displaySize) {
         
         //reste numbers of file and folder
         this.numberOfFile = 0;
@@ -96,7 +99,12 @@ public class Lister {
             try {
                 if(type==Lister.TXT) {
                     appendToFileEOL(folder.toString());
-                    appendToFileEOL("# " + folder.getName());
+                    appendToFile("# " + folder.getName());
+                    if(displaySize) {
+                        appendToFile(" (" + this.formatFileSizeToString(this.getFileSize(folder)) + ")");
+                    }
+                    appendToFileEOL("");
+                    
                 } else if(type==Lister.HTML) {
                     appendToFileEOL("<!doctype html>");
                     appendToFileEOL("<html lang=\"fr\">");
@@ -110,11 +118,15 @@ public class Lister {
                     appendToFileEOL("</head>");
                     appendToFileEOL("<body>");
                     appendToFileEOL(folder.toString() + "<br />");
-                    appendToFileEOL("<img src=\"img/folder.png\" class=\"img\" />&nbsp;" + folder.getName() + "<br />");
+                    appendToFile("<img src=\"img/folder.png\" class=\"img\" />&nbsp;" + folder.getName());
+                    if(displaySize) {
+                        appendToFile(" (" + this.formatFileSizeToString(this.getFileSize(folder)) + ")");
+                    }
+                    appendToFileEOL("<br />");
 
                 }
                 
-                listFolder(folder, 1, type); // tab parameter is not optional because of the recursivity
+                listFolder(folder, 1, type, displaySize); // tab parameter is not optional because of the recursivity
             } finally {
                 if(type==Lister.TXT) {
                     
@@ -160,7 +172,7 @@ public class Lister {
      * @param tab       number of tabulation which indicate the depth of the file
      * @param type      type of output file
      */
-    private void listFolder(File folder, int tab, int type) {
+    private void listFolder(File folder, int tab, int type, boolean displaySize) {
         
         int tab2 = tab+1;
         File[] list = folder.listFiles();
@@ -177,30 +189,38 @@ public class Lister {
                     }
                     //display the file name
                     if(type==Lister.TXT) {
-                        appendToFileEOL(f.getName());
+                        appendToFile(f.getName());
+                        if(displaySize) {
+                            appendToFile(" (" + this.formatFileSizeToString(this.getFileSize(f)) + ")");
+                        }
+                        appendToFileEOL("");
                     } else if(type==Lister.HTML) {
                         switch(getExtension(f.getName())) {
-                            case Lister.E_TXT: appendToFileEOL("<img src=\"img/txt.png\" class=\"img\" />&nbsp;" + f.getName() + "<br />"); break;
-                            case Lister.E_TORRENT: appendToFileEOL("<img src=\"img/torrent.png\" class=\"img\" />&nbsp;" + f.getName() + "<br />"); break;
-                            case Lister.E_JPG: appendToFileEOL("<img src=\"img/img.png\" class=\"img\" />&nbsp;" + f.getName() + "<br />"); break;
-                            case Lister.E_JPEG: appendToFileEOL("<img src=\"img/img.png\" class=\"img\" />&nbsp;" + f.getName() + "<br />"); break;
-                            case Lister.E_PNG: appendToFileEOL("<img src=\"img/img.png\" class=\"img\" />&nbsp;" + f.getName() + "<br />"); break;
-                            case Lister.E_GIF: appendToFileEOL("<img src=\"img/img.png\" class=\"img\" />&nbsp;" + f.getName() + "<br />"); break;
-                            case Lister.E_BMP: appendToFileEOL("<img src=\"img/img.png\" class=\"img\" />&nbsp;" + f.getName() + "<br />"); break;
-                            case Lister.E_DOC: appendToFileEOL("<img src=\"img/word.png\" class=\"img\" />&nbsp;" + f.getName() + "<br />"); break;
-                            case Lister.E_DOCX: appendToFileEOL("<img src=\"img/word.png\" class=\"img\" />&nbsp;" + f.getName() + "<br />"); break;
-                            case Lister.E_XLS: appendToFileEOL("<img src=\"img/excel.png\" class=\"img\" />&nbsp;" + f.getName() + "<br />"); break;
-                            case Lister.E_XLSX: appendToFileEOL("<img src=\"img/excel.png\" class=\"img\" />&nbsp;" + f.getName() + "<br />"); break;
-                            case Lister.E_PPS: appendToFileEOL("<img src=\"img/powerpoint.png\" class=\"img\" />&nbsp;" + f.getName() + "<br />"); break;
-                            case Lister.E_PPT: appendToFileEOL("<img src=\"img/powerpoint.png\" class=\"img\" />&nbsp;" + f.getName() + "<br />"); break;
-                            case Lister.E_PPTX: appendToFileEOL("<img src=\"img/powerpoint.png\" class=\"img\" />&nbsp;" + f.getName() + "<br />"); break;
-                            case Lister.E_AVI: appendToFileEOL("<img src=\"img/movie.png\" class=\"img\" />&nbsp;" + f.getName() + "<br />"); break;
-                            case Lister.E_MKV: appendToFileEOL("<img src=\"img/movie.png\" class=\"img\" />&nbsp;" + f.getName() + "<br />"); break;
-                            case Lister.E_WMV: appendToFileEOL("<img src=\"img/movie.png\" class=\"img\" />&nbsp;" + f.getName() + "<br />"); break;
-                            case Lister.E_MOV: appendToFileEOL("<img src=\"img/movie.png\" class=\"img\" />&nbsp;" + f.getName() + "<br />"); break;
-                            case Lister.E_PDF: appendToFileEOL("<img src=\"img/pdf.png\" class=\"img\" />&nbsp;" + f.getName() + "<br />"); break;
-                            default: appendToFileEOL("<img src=\"img/file.png\" class=\"img\" />&nbsp;" + f.getName() + "<br />");
+                            case Lister.E_TXT: appendToFile("<img src=\"img/txt.png\" class=\"img\" />&nbsp;" + f.getName()); break;
+                            case Lister.E_TORRENT: appendToFile("<img src=\"img/torrent.png\" class=\"img\" />&nbsp;" + f.getName()); break;
+                            case Lister.E_JPG: appendToFile("<img src=\"img/img.png\" class=\"img\" />&nbsp;" + f.getName()); break;
+                            case Lister.E_JPEG: appendToFile("<img src=\"img/img.png\" class=\"img\" />&nbsp;" + f.getName()); break;
+                            case Lister.E_PNG: appendToFile("<img src=\"img/img.png\" class=\"img\" />&nbsp;" + f.getName()); break;
+                            case Lister.E_GIF: appendToFile("<img src=\"img/img.png\" class=\"img\" />&nbsp;" + f.getName()); break;
+                            case Lister.E_BMP: appendToFile("<img src=\"img/img.png\" class=\"img\" />&nbsp;" + f.getName()); break;
+                            case Lister.E_DOC: appendToFile("<img src=\"img/word.png\" class=\"img\" />&nbsp;" + f.getName()); break;
+                            case Lister.E_DOCX: appendToFile("<img src=\"img/word.png\" class=\"img\" />&nbsp;" + f.getName()); break;
+                            case Lister.E_XLS: appendToFile("<img src=\"img/excel.png\" class=\"img\" />&nbsp;" + f.getName()); break;
+                            case Lister.E_XLSX: appendToFile("<img src=\"img/excel.png\" class=\"img\" />&nbsp;" + f.getName()); break;
+                            case Lister.E_PPS: appendToFile("<img src=\"img/powerpoint.png\" class=\"img\" />&nbsp;" + f.getName()); break;
+                            case Lister.E_PPT: appendToFile("<img src=\"img/powerpoint.png\" class=\"img\" />&nbsp;" + f.getName()); break;
+                            case Lister.E_PPTX: appendToFile("<img src=\"img/powerpoint.png\" class=\"img\" />&nbsp;" + f.getName()); break;
+                            case Lister.E_AVI: appendToFile("<img src=\"img/movie.png\" class=\"img\" />&nbsp;" + f.getName()); break;
+                            case Lister.E_MKV: appendToFile("<img src=\"img/movie.png\" class=\"img\" />&nbsp;" + f.getName()); break;
+                            case Lister.E_WMV: appendToFile("<img src=\"img/movie.png\" class=\"img\" />&nbsp;" + f.getName()); break;
+                            case Lister.E_MOV: appendToFile("<img src=\"img/movie.png\" class=\"img\" />&nbsp;" + f.getName()); break;
+                            case Lister.E_PDF: appendToFile("<img src=\"img/pdf.png\" class=\"img\" />&nbsp;" + f.getName()); break;
+                            default: appendToFile("<img src=\"img/file.png\" class=\"img\" />&nbsp;" + f.getName());
                         }
+                        if(displaySize) {
+                            appendToFile(" (" + this.formatFileSizeToString(this.getFileSize(f)) + ")");
+                        }
+                        appendToFileEOL("<br />");
                     }
                     
                     numberOfFile++;
@@ -215,13 +235,21 @@ public class Lister {
                     }
                     //display the folder name
                     if(type==Lister.TXT) {
-                        appendToFileEOL("# " + f.getName());
+                        appendToFile("# " + f.getName());
+                        if(displaySize) {
+                            appendToFile(" (" + this.formatFileSizeToString(this.getFileSize(f)) + ")");
+                        }
+                        appendToFileEOL("");
                     } else if(type==Lister.HTML) {
-                        appendToFileEOL("<img src=\"img/folder.png\" class=\"img\" />&nbsp;" + f.getName() + "<br />");
+                        appendToFile("<img src=\"img/folder.png\" class=\"img\" />&nbsp;" + f.getName());
+                        if(displaySize) {
+                            appendToFile(" (" + this.formatFileSizeToString(this.getFileSize(f)) + ")");
+                        }
+                        appendToFileEOL("<br />");
                     }
                     
                     numberOfFolder++;
-                    listFolder(f, tab2, type);
+                    listFolder(f, tab2, type, displaySize);
                 }
             }
         }
@@ -248,7 +276,7 @@ public class Lister {
      * @param fileName  Name of the file, with the extension
      * @return the extension of the file
      */
-    public int getExtension(String fileName) {
+    private int getExtension(String fileName) {
         StringTokenizer st = new StringTokenizer(fileName, ".");
         String s = null;
         //get the last token, i.e. the extension, in a string
@@ -280,5 +308,66 @@ public class Lister {
             default: return 0;
             
         }
+    }
+    
+    /**
+     * Return the size of a file or folder (bytes)
+     * @param folder the file or folder to get the size of
+     * @return the size of the file or folder
+     */
+    private long getFileSize(File folder) {
+        long size = 0;
+        if(folder.isFile()) {
+            size = folder.length();
+        } else {
+            File[] files = folder.listFiles();
+            if(files != null) {
+                for(File f : files) {
+                    if(f.isFile()) {
+                        size += f.length();
+                    } else {
+                        size += getFileSize(f);
+                    }
+                }
+            }
+        }
+        return size;
+    }
+    
+    /**
+     * Return the formatted size of a file, with unit (o, ko, Mo, Go, To)
+     * @param size the size to convert in String
+     * @return the formatted size
+     */
+    private String formatFileSizeToString(long size) {
+        
+        double sizeF = (double)size;
+        NumberFormat nf = new DecimalFormat("0.###");
+        
+        if(size<1000) {
+            return size + " o";
+        } else {
+            sizeF /= 1000.0;
+        }
+        
+        if(sizeF<1000.0) {
+            return nf.format(sizeF) + " ko";
+        } else {
+            sizeF /= 1000.0;
+        }
+        
+        if(sizeF<1000.0) {
+            return nf.format(sizeF) + " Mo";
+        } else {
+            sizeF /= 1000.0;
+        }
+        
+        if(sizeF<1000.0) {
+            return nf.format(sizeF) + " Go";
+        } else {
+            sizeF /= 1000.0;
+        }
+        
+        return nf.format(sizeF) + " To";
     }
 }

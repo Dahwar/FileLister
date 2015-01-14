@@ -65,6 +65,8 @@ public class FXMLFileListerController implements Initializable {
     @FXML
     private CheckBox checkBoxSeparator;
     @FXML
+    private CheckBox checkboxSize;
+    @FXML
     private Button openButton;
     
     DirectoryChooser directoryChooser = new DirectoryChooser();
@@ -148,9 +150,9 @@ public class FXMLFileListerController implements Initializable {
                         long a = System.currentTimeMillis();
                         
                         if(comboBoxType.getValue().equals(".txt")) {
-                            lister.execute(folder, output, radioButtonEraseData.isSelected(), Lister.TXT, checkBoxSeparator.isSelected());
+                            lister.execute(folder, output, radioButtonEraseData.isSelected(), Lister.TXT, checkBoxSeparator.isSelected(), checkboxSize.isSelected());
                         } else if(comboBoxType.getValue().equals(".html")) {
-                            lister.execute(folder, output, radioButtonEraseData.isSelected(), Lister.HTML, checkBoxSeparator.isSelected());
+                            lister.execute(folder, output, radioButtonEraseData.isSelected(), Lister.HTML, checkBoxSeparator.isSelected(), checkboxSize.isSelected());
                         }
                         
                         long b = System.currentTimeMillis();
