@@ -13,6 +13,7 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.List;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -64,18 +65,20 @@ public class Lister {
     
     /**
      * List all the subfolders and files in the main folder
-     * @param folder    the folder for recursive search
+     * @param file    the folder for recursive search
      * @param output    the file to write in
      * @param doErase   erase the output file if exist or continue to fill in the same file 
      * @param type      type of output file
      * @param separator indicate if the separator beetween column appear
      * @param displaySize indicate if the size of file and folder appear
      */
-    public void execute(File folder, File output, boolean doErase, int type, boolean separator, boolean displaySize) {
+    public void execute(File file, File output, boolean doErase, int type, boolean separator, boolean displaySize) {
         
-        //reste numbers of file and folder
+        //reset numbers of file and folder
         this.numberOfFile = 0;
         this.numberOfFolder = 0;
+       
+        FileTree folder = new FileTree(file);
         
         // display the right separator
         if(separator) {
@@ -101,7 +104,7 @@ public class Lister {
                     appendToFileEOL(folder.toString());
                     appendToFile("# " + folder.getName());
                     if(displaySize) {
-                        appendToFile(" (" + this.formatFileSizeToString(this.getFileSize(folder)) + ")");
+                        appendToFile(" (" + this.formatFileSizeToString(folder.length()) + ")");
                     }
                     appendToFileEOL("");
                     
@@ -120,7 +123,7 @@ public class Lister {
                     appendToFileEOL(folder.toString() + "<br />");
                     appendToFile("<img src=\"img/folder.png\" class=\"img\" />&nbsp;" + folder.getName());
                     if(displaySize) {
-                        appendToFile(" (" + this.formatFileSizeToString(this.getFileSize(folder)) + ")");
+                        appendToFile(" (" + this.formatFileSizeToString(folder.length()) + ")");
                     }
                     appendToFileEOL("<br />");
 
@@ -172,12 +175,12 @@ public class Lister {
      * @param tab       number of tabulation which indicate the depth of the file
      * @param type      type of output file
      */
-    private void listFolder(File folder, int tab, int type, boolean displaySize) {
+    private void listFolder(FileTree folder, int tab, int type, boolean displaySize) {
         
         int tab2 = tab+1;
-        File[] list = folder.listFiles();
-        if(list != null) {
-            for(File f : list) {
+        List<FileTree> list = folder.listFiles();
+        if(list != null && !list.isEmpty()) {
+            for(FileTree f : list) {
                 if(f.isFile()) { // if the File is a file
                     //display the right number of "blank"
                     for(int i = 0; i<tab; i++) {
@@ -191,7 +194,7 @@ public class Lister {
                     if(type==Lister.TXT) {
                         appendToFile(f.getName());
                         if(displaySize) {
-                            appendToFile(" (" + this.formatFileSizeToString(this.getFileSize(f)) + ")");
+                            appendToFile(" (" + this.formatFileSizeToString(f.length()) + ")");
                         }
                         appendToFileEOL("");
                     } else if(type==Lister.HTML) {
@@ -218,7 +221,7 @@ public class Lister {
                             default: appendToFile("<img src=\"img/file.png\" class=\"img\" />&nbsp;" + f.getName());
                         }
                         if(displaySize) {
-                            appendToFile(" (" + this.formatFileSizeToString(this.getFileSize(f)) + ")");
+                            appendToFile(" (" + this.formatFileSizeToString(f.length()) + ")");
                         }
                         appendToFileEOL("<br />");
                     }
@@ -237,13 +240,13 @@ public class Lister {
                     if(type==Lister.TXT) {
                         appendToFile("# " + f.getName());
                         if(displaySize) {
-                            appendToFile(" (" + this.formatFileSizeToString(this.getFileSize(f)) + ")");
+                            appendToFile(" (" + this.formatFileSizeToString(f.length()) + ")");
                         }
                         appendToFileEOL("");
                     } else if(type==Lister.HTML) {
                         appendToFile("<img src=\"img/folder.png\" class=\"img\" />&nbsp;" + f.getName());
                         if(displaySize) {
-                            appendToFile(" (" + this.formatFileSizeToString(this.getFileSize(f)) + ")");
+                            appendToFile(" (" + this.formatFileSizeToString(f.length()) + ")");
                         }
                         appendToFileEOL("<br />");
                     }
@@ -308,30 +311,6 @@ public class Lister {
             default: return 0;
             
         }
-    }
-    
-    /**
-     * Return the size of a file or folder (bytes)
-     * @param folder the file or folder to get the size of
-     * @return the size of the file or folder
-     */
-    private long getFileSize(File folder) {
-        long size = 0;
-        if(folder.isFile()) {
-            size = folder.length();
-        } else {
-            File[] files = folder.listFiles();
-            if(files != null) {
-                for(File f : files) {
-                    if(f.isFile()) {
-                        size += f.length();
-                    } else {
-                        size += getFileSize(f);
-                    }
-                }
-            }
-        }
-        return size;
     }
     
     /**

@@ -67,7 +67,7 @@
                               <Insets right="10.0" />
                            </HBox.margin>
                         </CheckBox>
-                        <CheckBox fx:id="checkboxSize" mnemonicParsing="false" text="Afficher poids" />
+                        <CheckBox fx:id="checkboxSize" mnemonicParsing="false" selected="true" text="Afficher poids" />
                      </children>
                   </HBox>
                </center>
