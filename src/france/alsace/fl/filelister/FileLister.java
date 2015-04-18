@@ -25,7 +25,7 @@ public class FileLister extends Application {
         Scene scene = new Scene(root);
         Image icon = new Image("/img/list.png");
         stage.getIcons().add(icon);
-        stage.setTitle("FileListerFX");
+        stage.setTitle("FileListerFX v1.2.1");
         
         stage.setScene(scene);
         stage.show();
