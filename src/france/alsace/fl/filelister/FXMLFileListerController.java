@@ -310,7 +310,7 @@ public class FXMLFileListerController implements Initializable {
 
     @FXML
     private void openFolder(ActionEvent event) {
-        if(lastResultFolder != "") {
+        if(!lastResultFolder.equals("")) {
             labelError.setText("");
             try {
                 Desktop.getDesktop().open(new File(lastResultFolder));
