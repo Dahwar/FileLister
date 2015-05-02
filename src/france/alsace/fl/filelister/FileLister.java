@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package france.alsace.fl.filelister;
 
 import javafx.application.Application;
@@ -13,7 +8,7 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 /**
- *
+ * Main
  * @author Florent
  */
 public class FileLister extends Application {

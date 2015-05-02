@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package france.alsace.fl.filelister;
 
 import java.awt.Desktop;
@@ -308,6 +303,10 @@ public class FXMLFileListerController implements Initializable {
         }
     }
 
+    /**
+     * Open the folder with the list of file
+     * @param event 
+     */
     @FXML
     private void openFolder(ActionEvent event) {
         if(!lastResultFolder.equals("")) {
